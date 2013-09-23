@@ -149,12 +149,13 @@ public class Ocean {
     Ocean newocean = new Ocean(width, height, starveTime);
     for(int i = 0; i < width; i++){
       for(int j = 0; j < height; j++){
-        if(cellContents(i, j) == SHARK){
+        if(this.cellContents(i, j) == SHARK){
           if(neighborfish(i, j) >= 1){
             newocean.sharkdietime[i][j] = starveTime;
             newocean.thisocean[i][j] = SHARK;
           }else{
-            newocean.sharkdietime[i][j]--;
+            int hunger = this.sharkdietime[i][j] - 1;
+            newocean.sharkdietime[i][j] = hunger;
             newocean.thisocean[i][j] = SHARK;
             if(newocean.sharkdietime[i][j] == 0){
               newocean.thisocean[i][j] = EMPTY;
@@ -162,18 +163,18 @@ public class Ocean {
           }
         }
 
-        if(cellContents(i, j) == FISH){
+        else if(this.cellContents(i, j) == FISH){
           if(neighborshark(i ,j) == 0){
             newocean.thisocean[i][j] = FISH;
           }else if(neighborshark(i, j) == 1){
             newocean.thisocean[i][j] = EMPTY;
-          }else if(neighborshark(i, j) > 1){
+          }else if(neighborshark(i, j) >= 2){
             newocean.thisocean[i][j] = SHARK;
             newocean.sharkdietime[i][j] = starveTime;
           }
         }
 
-        if(cellContents(i ,j) == EMPTY){
+        else if(this.cellContents(i ,j) == EMPTY){
           if(neighborfish(i, j) <= 1){
             newocean.thisocean[i][j] = EMPTY;
           }else if(neighborshark(i, j) <= 1 && neighborfish(i, j) >= 2){
@@ -192,11 +193,11 @@ public class Ocean {
     int fishnum = 0;
     for(int a = i - 1; a <= i + 1; a++){
       for(int b = j - 1; b <= j + 1; b++){
-        if(thisocean[modulo(a, width)][modulo(b, height)] == FISH)
+        if(this.thisocean[modulo(a, width)][modulo(b, height)] == FISH)
           fishnum++;
       }
     }
-    if(thisocean[modulo(i, width)][modulo(j, height)] == FISH)
+    if(this.thisocean[modulo(i, width)][modulo(j, height)] == FISH)
       fishnum--;
     return fishnum;
   }
@@ -205,11 +206,11 @@ public class Ocean {
     int sharknum = 0;
     for(int a = i - 1; a <= i + 1; a++){
       for(int b = j - 1; b <= j + 1; b++){
-        if(thisocean[modulo(a, width)][modulo(b, height)] == SHARK)
+        if(this.thisocean[modulo(a, width)][modulo(b, height)] == SHARK)
           sharknum++;
       }
     }
-    if(thisocean[modulo(i, width)][modulo(j, height)] == SHARK)
+    if(this.thisocean[modulo(i, width)][modulo(j, height)] == SHARK)
       sharknum--;
     return sharknum;
   }
