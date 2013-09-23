@@ -30,10 +30,9 @@ give you a valid position in the grid by "wrapping around" at the edges.
 There are two kinds of entities in this ocean:  sharks and fish.  The sharks
 and fish breed, eat, and die in the ocean.  Each cell of the grid can be
 occupied by a single shark or fish, or it can be empty.
-
+
 Part I:  Simulating Sharks and Fish
 ===================================
-This part is worth 40% of your total score.  (8 points out of 20).
 
 An ocean is described by its size and the initial placement of sharks and fish
 in the ocean.  It is also described by a parameter called the "starveTime" for
