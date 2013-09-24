@@ -1,4 +1,4 @@
-/* RunLengthEncoding.java */
+ /* RunLengthEncoding.java */
 
 /**
  *  The RunLengthEncoding class defines an object that run-length encodes an
@@ -28,7 +28,11 @@ public class RunLengthEncoding {
    *  These variables MUST be private.
    */
 
-
+  private int width;
+  private int height;
+  private int starveTime;
+  private DList runs;
+  private int runpointer = 0;
 
   /**
    *  The following methods are required for Part II.
@@ -44,7 +48,7 @@ public class RunLengthEncoding {
    */
 
   public RunLengthEncoding(int i, int j, int starveTime) {
-    // Your solution here.
+    DList runs = new DList(i, j, starveTime);
   }
 
   /**
@@ -66,7 +70,10 @@ public class RunLengthEncoding {
 
   public RunLengthEncoding(int i, int j, int starveTime,
                            int[] runTypes, int[] runLengths) {
-    // Your solution here.
+    DList runs = new DList(i, j, starveTime);
+    for(int k = 0; k < runTypes.length; k++){
+      runs.addTail(runTypes[k], runLengths[k]);
+    }
   }
 
   /**
@@ -93,7 +100,7 @@ public class RunLengthEncoding {
    */
 
   public void restartRuns() {
-    // Your solution here.
+    runpointer = 0;
   }
 
   /**
@@ -108,8 +115,16 @@ public class RunLengthEncoding {
    */
 
   public int[] nextRun() {
-    // Replace the following line with your solution.
-    return new int[2];
+    int[] run = new int[2];
+    DListNode pos = runs.head;
+    if(runpointer > runs.size){
+      return null;
+    }else{
+      run[0] = pos.runTypes;
+      run[1] = pos.runLengths;
+      pos = pos.next;
+      return run;
+    }
   }
 
   /**
@@ -120,8 +135,28 @@ public class RunLengthEncoding {
    */
 
   public Ocean toOcean() {
-    // Replace the following line with your solution.
-    return new Ocean(1, 1, 1);
+    Ocean toocean = new Ocean(runs.width, runs.height, runs.starveTime);
+    DListNode pos = runs.head;
+    int i = 0, j = 0;
+    for(int m = 0; m < runs.size; m++){
+      for(int n = 0; n < pos.runLengths; n++){
+        if(pos.runTypes == Ocean.FISH){
+          toocean.addFish(i, j);
+        }
+        // if(pos.runTypes == Ocean.EMPTY){
+
+        // }
+        if(pos.runTypes == Ocean.SHARK){
+          toocean.addShark(i, j, runs.starveTime);
+        }
+        i++;
+        if(i % runs.width == 0){
+          j++;
+        }        
+      }
+      pos = pos.next;
+    }
+    return toocean;
   }
 
   /**

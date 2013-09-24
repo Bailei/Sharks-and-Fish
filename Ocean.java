@@ -154,8 +154,8 @@ public class Ocean {
             newocean.sharkdietime[i][j] = starveTime;
             newocean.thisocean[i][j] = SHARK;
           }else{
-            int hunger = this.sharkdietime[i][j] - 1;
-            newocean.sharkdietime[i][j] = hunger;
+            int hunger = this.sharkdietime[i][j];
+            newocean.sharkdietime[i][j] = hunger - 1;
             newocean.thisocean[i][j] = SHARK;
             if(newocean.sharkdietime[i][j] == 0){
               newocean.thisocean[i][j] = EMPTY;
