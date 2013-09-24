@@ -171,8 +171,26 @@ public class RunLengthEncoding {
    */
 
   public RunLengthEncoding(Ocean sea) {
-    // Your solution here, but you should probably leave the following line
-    //   at the end.
+    DList runs = new DList(sea.width(), sea.height(), sea.starveTime()); 
+    DListNode curr = new DListNode();
+    DListNode firse = new DListNode();
+    int i = 0;
+    int j = 0; 
+    runs.addTail(sea.cellContents(0, 0), 1, sea.sharkFeeding(0, 0));
+    curr = runs.head;
+
+    for(i = 0; i < sea.width(); i++){
+      for(j = 0; j < sea.height(); j++){
+        if(!(i == 0 && j == 0)){
+          if(sea.cellContents(i, j) == curr.runTypes && sea.sharkFeeding(i, j) == curr.hunger){
+            curr.runLengths++;
+          }else{
+            runs.addTail(sea.cellContents(i, j), 1, sea.sharkFeeding(i, j));
+            curr = curr.next;
+          }
+        }
+      }
+    }
     check();
   }
 
@@ -219,6 +237,7 @@ public class RunLengthEncoding {
    */
 
   private void check() {
+    
   }
 
 }

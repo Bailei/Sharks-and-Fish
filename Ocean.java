@@ -32,7 +32,7 @@ public class Ocean {
   private int width;
   private int height;
   private int starveTime;
-  private int[][] thisocean, sharkdietime;
+  private int[][] thiscell, sharkdietime;
 
   /**
    *  The following methods are required for Part I.
@@ -50,7 +50,7 @@ public class Ocean {
     this.width = i;
     this.height = j;
     this.starveTime = starveTime;
-    thisocean = new int[width][height];
+    thiscell = new int[width][height];
     sharkdietime = new int[width][height];
   }
 
@@ -103,7 +103,7 @@ public class Ocean {
     if(cellContents(x, y) == EMPTY){
       int a = modulo(x, width);
       int b = modulo(y, height);
-      thisocean[a][b]= FISH;
+      thiscell[a][b]= FISH;
     }
   }
 
@@ -120,7 +120,7 @@ public class Ocean {
     if(cellContents(x, y) == EMPTY){
       int a = modulo(x, width);
       int b = modulo(y, height);
-      thisocean[a][b]= SHARK;
+      thiscell[a][b]= SHARK;
       sharkdietime[a][b] = starveTime;
     }
   }
@@ -136,7 +136,7 @@ public class Ocean {
     // Replace the following line with your solution.
     int a = modulo(x, width);
     int b = modulo(y, height);
-    return thisocean[a][b];
+    return thiscell[a][b];
   }
 
   /**
@@ -152,35 +152,35 @@ public class Ocean {
         if(this.cellContents(i, j) == SHARK){
           if(neighborfish(i, j) >= 1){
             newocean.sharkdietime[i][j] = starveTime;
-            newocean.thisocean[i][j] = SHARK;
+            newocean.thiscell[i][j] = SHARK;
           }else{
             int hunger = this.sharkdietime[i][j];
             newocean.sharkdietime[i][j] = hunger - 1;
-            newocean.thisocean[i][j] = SHARK;
+            newocean.thiscell[i][j] = SHARK;
             if(newocean.sharkdietime[i][j] == 0){
-              newocean.thisocean[i][j] = EMPTY;
+              newocean.thiscell[i][j] = EMPTY;
             }
           }
         }
 
         else if(this.cellContents(i, j) == FISH){
           if(neighborshark(i ,j) == 0){
-            newocean.thisocean[i][j] = FISH;
+            newocean.thiscell[i][j] = FISH;
           }else if(neighborshark(i, j) == 1){
-            newocean.thisocean[i][j] = EMPTY;
+            newocean.thiscell[i][j] = EMPTY;
           }else if(neighborshark(i, j) >= 2){
-            newocean.thisocean[i][j] = SHARK;
+            newocean.thiscell[i][j] = SHARK;
             newocean.sharkdietime[i][j] = starveTime;
           }
         }
 
         else if(this.cellContents(i ,j) == EMPTY){
           if(neighborfish(i, j) <= 1){
-            newocean.thisocean[i][j] = EMPTY;
+            newocean.thiscell[i][j] = EMPTY;
           }else if(neighborshark(i, j) <= 1 && neighborfish(i, j) >= 2){
-            newocean.thisocean[i][j] = FISH; 
+            newocean.thiscell[i][j] = FISH; 
           }else if(neighborfish(i, j) >= 2 && neighborshark(i, j) >= 2){
-            newocean.thisocean[i][j] = SHARK;
+            newocean.thiscell[i][j] = SHARK;
             newocean.sharkdietime[i][j] = starveTime;
           }
         }
@@ -193,11 +193,11 @@ public class Ocean {
     int fishnum = 0;
     for(int a = i - 1; a <= i + 1; a++){
       for(int b = j - 1; b <= j + 1; b++){
-        if(this.thisocean[modulo(a, width)][modulo(b, height)] == FISH)
+        if(this.thiscell[modulo(a, width)][modulo(b, height)] == FISH)
           fishnum++;
       }
     }
-    if(this.thisocean[modulo(i, width)][modulo(j, height)] == FISH)
+    if(this.thiscell[modulo(i, width)][modulo(j, height)] == FISH)
       fishnum--;
     return fishnum;
   }
@@ -206,11 +206,11 @@ public class Ocean {
     int sharknum = 0;
     for(int a = i - 1; a <= i + 1; a++){
       for(int b = j - 1; b <= j + 1; b++){
-        if(this.thisocean[modulo(a, width)][modulo(b, height)] == SHARK)
+        if(this.thiscell[modulo(a, width)][modulo(b, height)] == SHARK)
           sharknum++;
       }
     }
-    if(this.thisocean[modulo(i, width)][modulo(j, height)] == SHARK)
+    if(this.thiscell[modulo(i, width)][modulo(j, height)] == SHARK)
       sharknum--;
     return sharknum;
   }
@@ -235,7 +235,10 @@ public class Ocean {
    */
 
   public void addShark(int x, int y, int feeding) {
-    // Your solution here.
+    int a = modulo(x, width);
+    int b = modulo(y, height);
+    this.thiscell[a][b]= SHARK;
+    this.sharkdietime[a][b] = feeding;
   }
 
   /**
@@ -255,8 +258,13 @@ public class Ocean {
    */
 
   public int sharkFeeding(int x, int y) {
-    // Replace the following line with your solution.
-    return 0;
+    int a = modulo(x, width);
+    int b = modulo(y, height);
+    if(thiscell[a][b] == SHARK){
+      return this.sharkdietime[a][b];
+    }else{
+      return 0;
+    }
   }
 
 }

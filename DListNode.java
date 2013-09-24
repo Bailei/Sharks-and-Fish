@@ -18,6 +18,7 @@ public class DListNode{
 		next = null;
 		this.runTypes = runTypes;
 		this.runLengths = runLengths;
+		this.hunger = 0;
 	};
 
 	public DListNode(int runTypes, int runLengths, int hunger){
