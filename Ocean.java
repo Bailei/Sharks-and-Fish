@@ -145,7 +145,6 @@ public class Ocean {
    */
 
   public Ocean timeStep() {
-    // Replace the following line with your solution.
     Ocean newocean = new Ocean(width, height, starveTime);
     for(int i = 0; i < width; i++){
       for(int j = 0; j < height; j++){
@@ -157,7 +156,7 @@ public class Ocean {
             int hunger = this.sharkdietime[i][j];
             newocean.sharkdietime[i][j] = hunger - 1;
             newocean.thiscell[i][j] = SHARK;
-            if(newocean.sharkdietime[i][j] == 0){
+            if(newocean.sharkdietime[i][j] == -1){
               newocean.thiscell[i][j] = EMPTY;
             }
           }
