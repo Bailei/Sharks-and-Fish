@@ -237,7 +237,25 @@ public class RunLengthEncoding {
    */
 
   private void check() {
-    
+    DListNode curr = new DListNode();
+    curr = this.runs.head;
+    int length = 0;
+    while(curr.next != null){
+      if(curr.runTypes == curr.next.runTypes){
+        if(curr.hunger == curr.next.hunger){  
+          System.out.println("This RunLengthEncoding is illegal");
+        }
+      }
+      if(curr.runLengths < 1){
+        System.out.println("This RunLengthEncoding has some runs that is illegal");
+      }
+      length = length + curr.runLengths;
+      curr = curr.next;
+    }
+    length = length + this.runs.tail.runLengths;
+    if(length != this.width * this.height){
+      System.out.println("This RunLengthEncoding is illegal");
+    }
   }
 
 }
