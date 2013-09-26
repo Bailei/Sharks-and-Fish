@@ -27,12 +27,12 @@ public class RunLengthEncoding {
    *  Define any variables associated with a RunLengthEncoding object here.
    *  These variables MUST be private.
    */
-
   private int width;
   private int height;
   private int starveTime;
   private DList runs;
-  private int runpointer = 0;
+  private DListNode curr;
+  private DListNode first;
 
   /**
    *  The following methods are required for Part II.
@@ -48,7 +48,12 @@ public class RunLengthEncoding {
    */
 
   public RunLengthEncoding(int i, int j, int starveTime) {
-    DList runs = new DList(i, j, starveTime);
+    width = i;
+    height = j;
+    this.starveTime = starveTime;
+    DList runs = new DList();
+    first = runs.head;
+    curr = first;
   }
 
   /**
@@ -70,10 +75,15 @@ public class RunLengthEncoding {
 
   public RunLengthEncoding(int i, int j, int starveTime,
                            int[] runTypes, int[] runLengths) {
-    DList runs = new DList(i, j, starveTime);
+    width = i;
+    height = j;
+    this.starveTime = starveTime;
+    DList runs = new DList();
     for(int k = 0; k < runTypes.length; k++){
       runs.addTail(runTypes[k], runLengths[k]);
     }
+    first = runs.head;
+    curr = first;
   }
 
   /**
@@ -100,7 +110,7 @@ public class RunLengthEncoding {
    */
 
   public void restartRuns() {
-    runpointer = 0;
+    curr = first;
   }
 
   /**
@@ -116,13 +126,12 @@ public class RunLengthEncoding {
 
   public int[] nextRun() {
     int[] run = new int[2];
-    DListNode pos = runs.head;
-    if(runpointer > runs.size){
+    if(curr == null){
       return null;
     }else{
-      run[0] = pos.runTypes;
-      run[1] = pos.runLengths;
-      pos = pos.next;
+      run[0] = curr.runTypes;
+      run[1] = curr.runLengths;
+      curr = curr.next;
       return run;
     }
   }
@@ -135,29 +144,52 @@ public class RunLengthEncoding {
    */
 
   public Ocean toOcean() {
-    Ocean toocean = new Ocean(runs.width, runs.height, runs.starveTime);
-    DListNode pos = runs.head;
+    Ocean toOcean = new Ocean(this.width, this.height, this.starveTime);
+    DListNode curr2 = first;
     int i = 0, j = 0;
-    for(int m = 0; m < runs.size; m++){
-      for(int n = 0; n < pos.runLengths; n++){
-        if(pos.runTypes == Ocean.FISH){
-          toocean.addFish(i, j);
+    while(curr2 != null){
+      for(int n = 0; n < curr2.runLengths; n++){
+        if(curr2.runTypes == Ocean.FISH){
+          toOcean.addFish(j, i);
         }
-        // if(pos.runTypes == Ocean.EMPTY){
-
-        // }
-        if(pos.runTypes == Ocean.SHARK){
-          toocean.addShark(i, j, runs.starveTime);
+        if(curr2.runTypes == Ocean.SHARK){
+          toOcean.addShark(j, i, curr2.hunger);
         }
-        i++;
-        if(i % runs.width == 0){
-          j++;
+        j++;
+        if(j % this.height == 0){
+          i++;
         }        
       }
-      pos = pos.next;
+      curr2 = curr2.next;
     }
-    return toocean;
+    return toOcean;
   }
+
+  // public Ocean toOcean(){
+  //   Ocean toOcean = new Ocean(this.width, this.height, this.starveTime);
+  //   DListNode curr2 = first;
+  //   int counter = 0;
+  //   for(int j = 0; j < this.height; j++){
+  //     for(int i = 0; i < this.width; i++){
+  //       if(curr2 == null){
+  //         return toOcean;
+  //       }else{
+  //         if(curr2.runTypes == Ocean.FISH){
+  //           toOcean.addFish(i, j);
+  //         }
+  //         if(curr2.runTypes == Ocean.SHARK){
+  //           toOcean.addShark(i, j, curr2.hunger);
+  //         }
+  //       }
+  //       counter++;
+  //       if(counter == curr2.runLengths){
+  //         curr2 = curr2.next;
+  //         counter = 0;
+  //       }
+  //     }
+  //   }
+  //   return toOcean;
+  // }
 
   /**
    *  The following method is required for Part III.
@@ -171,16 +203,17 @@ public class RunLengthEncoding {
    */
 
   public RunLengthEncoding(Ocean sea) {
-    DList runs = new DList(sea.width(), sea.height(), sea.starveTime()); 
-    DListNode curr = new DListNode();
-    DListNode firse = new DListNode();
+    DList runs = new DList(); 
+    width = sea.width();
+    height = sea.height();
+    starveTime = sea.starveTime();
     int i = 0;
     int j = 0; 
-    runs.addTail(sea.cellContents(0, 0), 1, sea.sharkFeeding(0, 0));
-    curr = runs.head;
-
-    for(i = 0; i < sea.width(); i++){
-      for(j = 0; j < sea.height(); j++){
+    runs.addTail(sea.cellContents(i, j), 1, sea.sharkFeeding(i, j));
+    first = runs.head;
+    curr = first;
+    for(j = 0; j < sea.height(); j++){
+      for(i = 0; i < sea.width(); i++){
         if(!(i == 0 && j == 0)){
           if(sea.cellContents(i, j) == curr.runTypes && sea.sharkFeeding(i, j) == curr.hunger){
             curr.runLengths++;
@@ -191,6 +224,7 @@ public class RunLengthEncoding {
         }
       }
     }
+    curr = first;
     check();
   }
 
@@ -201,7 +235,7 @@ public class RunLengthEncoding {
   /**
    *  addFish() places a fish in cell (x, y) if the cell is empty.  If the
    *  cell is already occupied, leave the cell as it is.  The final run-length
-   *  encoding should be compressed as much as possible; there should not be
+   *  encoding should be compressed as much as currsible; there should not be
    *  two consecutive runs of sharks with the same degree of hunger.
    *  @param x is the x-coordinate of the cell to place a fish in.
    *  @param y is the y-coordinate of the cell to place a fish in.
@@ -217,7 +251,7 @@ public class RunLengthEncoding {
    *  addShark() (with two parameters) places a newborn shark in cell (x, y) if
    *  the cell is empty.  A "newborn" shark is equivalent to a shark that has
    *  just eaten.  If the cell is already occupied, leave the cell as it is.
-   *  The final run-length encoding should be compressed as much as possible;
+   *  The final run-length encoding should be compressed as much as currsible;
    *  there should not be two consecutive runs of sharks with the same degree
    *  of hunger.
    *  @param x is the x-coordinate of the cell to place a shark in.
@@ -237,25 +271,23 @@ public class RunLengthEncoding {
    */
 
   private void check() {
-    DListNode curr = new DListNode();
-    curr = this.runs.head;
-    int length = 0;
-    while(curr.next != null){
-      if(curr.runTypes == curr.next.runTypes){
-        if(curr.hunger == curr.next.hunger){  
-          System.out.println("This RunLengthEncoding is illegal");
-        }
-      }
-      if(curr.runLengths < 1){
-        System.out.println("This RunLengthEncoding has some runs that is illegal");
-      }
-      length = length + curr.runLengths;
-      curr = curr.next;
-    }
-    length = length + this.runs.tail.runLengths;
-    if(length != this.width * this.height){
-      System.out.println("This RunLengthEncoding is illegal");
-    }
+    // int length = 0;
+    // while(curr.next != null){
+    //   if(curr.runTypes == curr.next.runTypes){
+    //     if(curr.hunger == curr.next.hunger){  
+    //       System.out.println("This RunLengthEncoding is illegal");
+    //     }
+    //   }
+    //   if(curr.runLengths < 1){
+    //     System.out.println("This RunLengthEncoding has some runs that is illegal");
+    //   }
+    //   length = length + curr.runLengths;
+    //   curr = curr.next;
+    // }
+    // length = length + runs.tail.runLengths;
+    // if(length != this.width * this.height){
+    //   System.out.println("This RunLengthEncoding is illegal");
+    // }
   }
 
 }
