@@ -2,20 +2,8 @@ public class DList{
 	public DListNode head;
 	public DListNode tail;
 	public long size;
-	public int width;
-	public int height;
-	public int starveTime;
 
 	public DList(){
-		head = null;
-		tail = null;
-		size = 0;
-	}
-
-	public DList(int i, int j, int starveTime){
-		width = i;
-		height = j;
-		this.starveTime = starveTime;
 		head = null;
 		tail = null;
 		size = 0;
