@@ -8,9 +8,6 @@ public class DListNode{
 	public DListNode(){
 		prev = null;
 		next = null;
-		runTypes = 0;
-		runLengths = 0;
-		hunger = 0;
 	}
 
 	public DListNode(int runTypes, int runLengths){
