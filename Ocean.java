@@ -99,12 +99,9 @@ public class Ocean {
   }
 
   public void addFish(int x, int y) {
-    // Your solution here.
-    if(cellContents(x, y) == EMPTY){
       int a = modulo(x, width);
       int b = modulo(y, height);
       thiscell[a][b]= FISH;
-    }
   }
 
   /**
@@ -116,13 +113,10 @@ public class Ocean {
    */
 
   public void addShark(int x, int y) {
-    // Your solution here.
-    if(cellContents(x, y) == EMPTY){
       int a = modulo(x, width);
       int b = modulo(y, height);
       thiscell[a][b]= SHARK;
       sharkdietime[a][b] = starveTime;
-    }
   }
 
   /**
