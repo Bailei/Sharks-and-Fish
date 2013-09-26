@@ -128,3 +128,53 @@ In the animation produced by Simulation, sharks are red squares and fish are
 green squares.  In the animation produced by SimText, sharks are 'S' characters
 and fish are '~' characters.  Simulation is more fun to watch, but SimText may
 be easier to use for debugging and remote access.
+
+Part II:  Converting a Run-Length Encoding to an Ocean
+======================================================
+
+For a large ocean, an Ocean object can consume quite a bit of memory or disk
+space.  For long-term storage, we can store an Ocean more efficiently if we
+represent it as a "run-length encoding."  Imagine taking all the rows of cells
+in the ocean, and connecting them into one long strip.  Think of the cells as
+being numbered thusly:
+
+                        -----------------------------
+                        |   0  |   1  |   2  |   3  |
+                        -----------------------------
+                        |   4  |   5  |   6  |   7  |
+                        -----------------------------
+                        |   8  |   9  |  10  |  11  |
+                        -----------------------------
+
+Typically, many regions of this strip are "runs" of many empty cells in a row,
+or many fish in a row, or many equally-hungry sharks in a row.  Run-length
+encoding is a technique in which a sequence of identical consecutive cells are
+represented as a single record or object.  For instance, the following strip of
+fish (F), sharks fed two timesteps ago (S2), and empty cells (.):
+
+            ------------------------------------------------------
+            | F | F | F | S2 | S2 | S2 | S2 | S2 | . | . | . | . |
+            ------------------------------------------------------
+              0   1   2    3    4    5    6    7   8   9   10  11
+
+could be represented with just three records, each representing one "run":
+
+                              ------------------
+                              | F3 | S2,5 | .4 |
+                              ------------------
+
+"F3" means that there are three consecutive fish, followed by "S2,5", meaning
+five consecutive sharks fed two timesteps ago, and then ".4":  four empty
+cells.  With this encoding, a huge ocean with just a few fish or sharks can be
+stored in a tiny amount of memory.  (Note, however, that a shark that just ate
+cannot be represented together with a shark that hasn't eaten in the last
+timestep.  For a correct encoding, you must separate sharks based on their
+hunger!)  If you are familiar with .GIF image files (often encountered on the
+Web), you might be interested to know that they use run-length encoding to
+reduce their sizes.
+
+Part III:  Converting an Ocean to a Run-Length Encoding
+=======================================================
+
+A RunLengthEncoding constructor that takes an Ocean object as its
+sole parameter and converts it into a run-length encoding of the Ocean.  
